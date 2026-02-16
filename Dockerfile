@@ -22,12 +22,12 @@ COPY apps/web/package*.json ./apps/web/
 COPY apps/packages/database/package*.json ./apps/packages/database/
 COPY apps/packages/shared/package*.json ./apps/packages/shared/
 
-RUN npm install
+RUN npm ci
 
 COPY . .
 
-RUN npm run build --workspace ./apps/packages/database
-RUN npm run build --workspace ./apps/packages/shared
+RUN npm run build --workspace ./apps/packages/database && \
+    npm run build --workspace ./apps/packages/shared
 
 FROM base AS api-builder
 RUN npm run build --workspace ./apps/api
