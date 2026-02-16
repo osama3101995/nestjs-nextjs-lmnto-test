@@ -1,0 +1,19 @@
+{
+  "name": "lmnto-monorepo",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": [
+    "apps/api",
+    "apps/packages/database",
+    "apps/packages/shared",
+    "apps/web"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "start:prod": "npm run start:prod --workspace ./apps/api",
+    "clean": "rimraf apps/api/dist apps/packages/shared/dist apps/packages/database/dist"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.0"
+  }
+}

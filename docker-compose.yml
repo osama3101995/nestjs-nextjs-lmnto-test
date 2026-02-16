@@ -1,0 +1,54 @@
+services:
+  api:
+    container_name: collections_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: api-builder
+    ports:
+      - "${APP_PORT}:5000"
+    env_file:
+      - .env
+    depends_on:
+      - postgres
+    networks:
+      - collections_network
+
+  web:
+    container_name: collections_web
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: web-builder
+      args:
+        - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env
+    depends_on:
+      - api
+    networks:
+      - collections_network
+
+  postgres:
+    container_name: collections_postgres
+    image: postgres:15
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - collections_network
+
+volumes:
+  postgres_data:
+
+networks:
+  collections_network:
+    driver: bridge

@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+
+enum CaseStage {
+  SOFT
+  HARD
+  LEGAL
+}
+
+enum CaseStatus {
+  OPEN
+  IN_PROGRESS
+  RESOLVED
+  CLOSED
+}
+
+enum ActionType {
+  CALL
+  SMS
+  EMAIL
+  WHATSAPP
+}
+
+enum ActionOutcome {
+  NO_ANSWER
+  PROMISE_TO_PAY
+  PAID
+  WRONG_NUMBER
+}
+
+
+model Customer {
+  id         Int      @id @default(autoincrement())
+  name       String
+  phone      String
+  email      String   @unique
+  country    String
+  riskScore  Int
+
+  loans      Loan[]
+  cases      Case[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Loan {
+  id           Int      @id @default(autoincrement())
+  customerId   Int
+  principal    Decimal
+  outstanding  Decimal
+  dueDate      DateTime
+  status       String
+
+  customer     Customer @relation(fields: [customerId], references: [id])
+  cases        Case[]
+
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([customerId])
+}
+
+model Case {
+  id          Int        @id @default(autoincrement())
+  customerId  Int
+  loanId      Int
+  dpd         Int
+  stage       CaseStage
+  status      CaseStatus
+  assignedTo  String?
+
+  customer    Customer  @relation(fields: [customerId], references: [id])
+  loan        Loan      @relation(fields: [loanId], references: [id])
+
+  actions     ActionLog[]
+  decisions   RuleDecision[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status, stage, dpd])
+  @@index([assignedTo])	
+  @@index([customerId])
+  @@index([loanId]) 
+  @@index([createdAt, id])    
+}
+
+model ActionLog {
+  id        Int          @id @default(autoincrement())
+  caseId    Int
+  type      ActionType
+  outcome   ActionOutcome
+  notes     String?
+
+  case      Case         @relation(fields: [caseId], references: [id])
+
+  createdAt DateTime     @default(now())
+
+  @@index([caseId, createdAt])
+}
+
+model RuleDecision {
+  id           Int      @id @default(autoincrement())
+  caseId       Int
+  matchedRules Json
+  reason       String
+  snapshots  RuleDecisionSnapshot[]
+
+  case         Case     @relation(fields: [caseId], references: [id])
+
+  createdAt    DateTime @default(now())
+
+   @@index([caseId, createdAt])  
+}
+
+model RuleDecisionSnapshot {
+  id             Int          @id @default(autoincrement())
+  ruleDecisionId Int
+  assignedTo     String?
+  stage          CaseStage
+
+  ruleDecision   RuleDecision @relation(fields: [ruleDecisionId], references: [id])
+
+  createdAt      DateTime @default(now())
+}
+
+model AssignmentRule {
+  id         Int      @id @default(autoincrement())
+  code       String   @unique
+  priority   Int      @default(0)
+  conditions Json
+  effects    Json
+  isOverride Boolean  @default(false)
+  enabled    Boolean  @default(true)
+
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([enabled, priority])
+}
+

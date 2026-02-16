@@ -1,0 +1,26 @@
+{
+  "name": "@repo/shared",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc --build tsconfig.build.json",
+    "clean": "rimraf dist",
+    "generate:client": "ts-node ./scripts/generate-client.ts"
+  },
+  "dependencies": {
+    "@nestjs/swagger": "^11.2.6",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "fs-extra": "^11.3.3",
+    "reflect-metadata": "^0.2.2",
+    "rimraf": "^5.0.0",
+    "ts-morph": "^26.0.0",
+    "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.4.0"
+  }
+}

@@ -1,0 +1,26 @@
+# .dockerignore
+
+# Ignore local environment files
+.env.local
+.env
+.env.*.local
+
+# Ignore node_modules (prevents copying local OS modules into Alpine)
+node_modules
+npm-debug.log
+
+# Ignore build folders
+dist
+build
+
+# Ignore git and IDE settings
+.git
+.vscode
+.idea
+.DS_Store
+
+_*
+
+.next
+apps/api/dist
+apps/web/.next
