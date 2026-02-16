@@ -151,6 +151,12 @@ The project includes a `Dockerfile` and `docker-entrypoint.sh` designed for prod
 
 ---
 
+## Swagger UI
+
+You can also access Swagger UI using the following link `http://localhost:5000/api/docs`
+
+---
+
 ## Tech Stack
 
 * **Backend**: NestJS, Prisma, Puppeteer (PDF), Zod.
