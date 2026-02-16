@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function HomePage() {
   const links = [
     { title: 'Case Dashboard', href: '/cases' },
-    { title: 'Rules Management', href: '/rules' },
+    { title: 'Case Details For Case 1', href: '/cases/1' },
   ];
 
   return (
@@ -36,7 +36,7 @@ export default function HomePage() {
 
         <footer className="mt-12 pt-6 border-t border-slate-100 text-center">
           <p className="text-slate-400 text-xs font-medium">
-            Connected to Shared Schema Engine v1.0.0
+            Connected to Rule Engine v1.0.0
           </p>
         </footer>
       </div>
